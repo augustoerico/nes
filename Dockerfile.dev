@@ -59,9 +59,13 @@ RUN pip3 install "setuptools<59.0.0"
 # [TODO] lock h5py to current latest
 RUN apk add curl
 RUN curl -S https://sh.rustup.rs | sh -s -- -y
-ENV PATH $HOME/.cargo/bin:$PATH
+ENV PATH "/root/.cargo/bin:${PATH}"
+RUN echo $PATH
+
+# use deps from the project in development
+COPY ./patientregistrationsystem/qdc/requirements.txt /wheels/requirement
 
 # END
 
 RUN pip3 install -r requirement/requirements.txt && \
-	pip3 wheel -r requirement/requirements.txt
+    pip3 wheel -r requirement/requirements.txt
