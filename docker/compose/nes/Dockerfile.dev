@@ -62,3 +62,6 @@ RUN curl -S https://sh.rustup.rs | sh -s -- -y
 ENV PATH $HOME/.cargo/bin:$PATH
 
 # END
+
+RUN pip3 install -r requirement/requirements.txt && \
+	pip3 wheel -r requirement/requirements.txt
