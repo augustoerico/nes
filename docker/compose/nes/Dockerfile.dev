@@ -1,0 +1,33 @@
+FROM python:3.8-alpine3.12 AS wheeler
+ENV PYTHONUNBUFFERED=1
+
+RUN apk update && \
+	apk add --no-cache \
+		libpng-dev \
+		freetype-dev \
+		build-base \
+		git \
+		postgresql-dev \
+		openblas-dev \
+		libjpeg-turbo-dev \
+		hdf5-dev && \
+	rm -rf /var/cache/apk/* && \
+	ln -s /usr/include/locale.h /usr/include/xlocale.h
+
+ARG NES_TAG=unset
+ARG NES_BRANCH=unset
+ARG NES_DIR=/nes
+ENV NES_DIR=$NES_DIR
+
+RUN mkdir -p /wheels/requirement
+
+WORKDIR /wheels
+
+RUN pip3 install pip==21.3.1 wheel==0.37.0 setuptools==59.4.0
+
+# Copy h5py pre-built libs
+RUN git clone https://github.com/augustoerico/h5py-alpine3_12-prebuilt-libs.git
+
+RUN python_libs_dir=$(python3 -c "import sysconfig; print(sysconfig.get_paths()['purelib'])") && \
+	cp -r h5py-alpine3_12-prebuilt-libs/h5py $python_libs_dir && \
+	cp -r h5py-alpine3_12-prebuilt-libs/h5py-3.6.0.dist-info $python_libs_dir
