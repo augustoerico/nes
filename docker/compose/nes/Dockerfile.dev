@@ -19,38 +19,15 @@ ARG NES_BRANCH=unset
 ARG NES_DIR=/nes
 ENV NES_DIR=$NES_DIR
 
+RUN mkdir -p /wheels/requirement
+
+WORKDIR /wheels
+
 RUN pip3 install pip==21.3.1 wheel==0.37.0 setuptools==59.4.0
 
-# Get pre-built libs
+# Copy h5py pre-built libs
 RUN git clone https://github.com/augustoerico/h5py-alpine3_12-prebuilt-libs.git
 
 RUN python_libs_dir=$(python3 -c "import sysconfig; print(sysconfig.get_paths()['purelib'])") && \
 	cp -r h5py-alpine3_12-prebuilt-libs/h5py $python_libs_dir && \
 	cp -r h5py-alpine3_12-prebuilt-libs/h5py-3.6.0.dist-info $python_libs_dir
-
-WORKDIR /nes
-
-# BEGIN
-
-# Problem: SciPy -> Numpy build fails
-# RUN pip3 install -U pip setuptools wheel
-#
-# Solution: downgrade setuptools to <59.0.0
-#	pip and wheel can be upgraded
-# [TODO] lock pip and wheel versions to avoid future crashes
-# RUN pip3 install pip==21.3.1 wheel==0.37.0 setuptools==59.4.0
-# RUN pip3 install -r requirement/requirements-lock.txt && \
-# 	pip3 wheel -r requirement/requirements-lock.txt
-
-# Problem: build h5py (?or was it rpds from good tables?) fails. Cargo missing
-# Solution: install and add cargo to PATH
-# [TODO] lock h5py to current latest
-# RUN apk add curl
-# RUN curl -S https://sh.rustup.rs | sh -s -- -y
-# ENV PATH "/root/.cargo/bin:${PATH}"
-# RUN echo $PATH
-
-# use deps from the project in development
-# COPY ./patientregistrationsystem/qdc/requirements.txt /wheels/requirement
-
-# END
