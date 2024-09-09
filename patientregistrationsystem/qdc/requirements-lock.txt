@@ -33,7 +33,6 @@ gitdb2==4.0.2
 GitPython==3.0.8
 goodtables==2.2.1
 greenlet==1.1.2
-h5py==3.6.0
 html5lib==1.0.1
 httplib2==0.20.2
 idna==2.9
